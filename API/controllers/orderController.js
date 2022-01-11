@@ -84,38 +84,29 @@ export const getOrderByID = async (req, res) => {
 /*---------------------------- Post Section ----------------------------*/
 
 export const createOrder = async (req, res) => {
-    if(req.body.orderItems.length == 0){
+    try{
+        const order = new Order({
+            orderItems:         req.body.orderItems,
+            shippingAddress:    req.body.shippingAddress,
+            paymentMethod:      req.body.paymentMethod,
+            itemsPrice:         req.body.itemsPrice,
+            shippingPrice:      req.body.shippingPrice,
+            taxPrice:           req.body.taxPrice,
+            totalPrice:         req.body.totalPrice,
+            user:               req.user._id,
+        });
+        const createdOrder = await order.save();
         res
-            .status(400)
+            .status(201)
             .send({
-                message: 'Cart is empty'
+                message: 'New Order Created',
+                order: createdOrder,
             });
     }
-    else{
-        try{
-            const order = new Order({
-                orderItems:         req.body.orderItems,
-                shippingAddress:    req.body.shippingAddress,
-                paymentMethod:      req.body.paymentMethod,
-                itemsPrice:         req.body.itemsPrice,
-                shippingPrice:      req.body.shippingPrice,
-                taxPrice:           req.body.taxPrice,
-                totalPrice:         req.body.totalPrice,
-                user:               req.user._id,
-            });
-            const createdOrder = await order.save();
-            res
-                .status(201)
-                .send({
-                    message: 'New Order Created',
-                    order: createdOrder,
-                });
-        }
-        catch (error){
-            res.status(404).send(error);
-        }
+    catch (error){
+        res.status(404).send(error);
+    }
 
-    }
 }
 
 

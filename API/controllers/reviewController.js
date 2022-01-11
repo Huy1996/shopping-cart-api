@@ -39,19 +39,21 @@ export const getUserReview = async (req, res) => {
 
 /*---------------------------- Post Section ----------------------------*/
 
-export const createReview = async (req, res) => {
+export const createReview = async (req, res, next) => {
     const user      = req.user._id;
     const product   = req.params.id;
     try{
         const review = new Review({
             _id:        new mongoose.Types.ObjectId(),
-            user:   user,
-            product: product,
-            rate: req.body.rate,
-            comment: req.body.comment
+            user:       user,
+            product:    product,
+            rating:       req.body.rating,
+            comment:    req.body.comment
         });
         const createdReview = await review.save();
         res.status(201).send(createdReview);
+        req.product = createdReview.product;
+        next();
     }
     catch (error){
         res.status(404).send(error);
@@ -62,14 +64,15 @@ export const createReview = async (req, res) => {
 
 /*---------------------------- Put Section ----------------------------*/
 
-export const updateReview = async (req, res) => {
-    const user      = req.user._id;
+export const updateReview = async (req, res, next) => {
     try{
-        const review = await Review.findById(user);
-        review.rate     = req.body.rate     || review.rate;
+        const review = await Review.findById(req.params.id);
+        review.rate     = req.body.rating     || review.rating;
         review.comment  = req.body.comment  || review.comment;
         const updatedReview = await review.save();
         res.status(200).send(updatedReview);
+        req.product = updatedReview.product;
+        next();
     }
     catch (error){
         res.status(404).send(error);

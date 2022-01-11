@@ -9,7 +9,8 @@ export const getAllProduct = async (req, res) => {
     // Get query data from route
     const page              = Number(req.query.pageNumber)          || 1;
     const name              = req.query.name                        || '';
-    const category           = req.query.category                   || '';
+    const category          = req.query.category                    || '';
+    const brand             = req.query.brand                       || '';
     const order             = req.query.order                       || '';
     const min               = req.query.min && Number(req.query.min) !== 0           ? Number(req.query.min)     : 0;
     const max               = req.query.max && Number(req.query.max) !== 0           ? Number(req.query.max)     : 0;
@@ -18,16 +19,20 @@ export const getAllProduct = async (req, res) => {
     // Creating filter
     const nameFilter        = name                  ? { name: { $regex: name, $options: 'i' } } : {};
     const categoryFilter    = category              ? { category }                              : {};
+    const brandFilter       = brand                 ? { brand }                                 : {};
     const priceFilter       = min && max            ? {price: {$gte: min, $lte: max}}           : {};
     const ratingFilter      = rating                ? {rating: {$gte: rating}}                  : {};
     const sortOrder         = order === 'lowest'    ? {price: 1} :
         order === 'highest' ? {price: -1} :
             order === 'toprated' ? {rating: -1}:
                 {_id: -1};
+
+    console.log(category)
     // Count matching data
     const count = await Product.count({
         ...nameFilter,
         ...categoryFilter,
+        ...brandFilter,
         ...priceFilter,
         ...ratingFilter,
     });
@@ -35,6 +40,7 @@ export const getAllProduct = async (req, res) => {
     const products = await Product.find({
                                             ...nameFilter,
                                             ...categoryFilter,
+                                            ...brandFilter,
                                             ...priceFilter,
                                             ...ratingFilter,
                                     })
@@ -54,6 +60,12 @@ export const getAllCategories = async (req, res) => {
     //Find all distinct category
     const categories = await Product.find().distinct('category');
     res.send(categories);
+}
+
+export const getAllBrands = async (req, res) => {
+    //Find all distinct brand
+    const brands = await Product.find().distinct('brand');
+    res.send(brands);
 }
 
 export const getProductByID = async (req, res) => {

@@ -5,9 +5,10 @@ import * as productController from '../controllers/productController.js' ;
 const productRoute = express.Router();
 
 // Get Request Section
-productRoute.get('/',               productController.getAllProduct);
-productRoute.get('/categories',     productController.getAllCategories);
-productRoute.get('/:id',            productController.getProductByID);
+productRoute.get('/',                                   productController.getAllProduct);
+productRoute.get('/categories',                         productController.getAllCategories);
+productRoute.get('/brands',                             productController.getAllBrands);
+productRoute.get('/:id',                                productController.getProductByID);
 
 
 // Post Request Section
