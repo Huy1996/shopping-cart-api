@@ -3,6 +3,8 @@ import User from '../models/user.js'
 import Product from "../models/product.js";
 import { mailgun, payOrderEmailTemplate } from '../middleware/middleware.js';
 
+/*---------------------------- Get Section ----------------------------*/
+
 export const getAllOrders = async (req, res) => {
     const pageSize      = 10;
     const page          = Number(req.query.pageNumber) || 1;
@@ -63,6 +65,24 @@ export const getPersonalOrder = async (req, res) => {
     res.send(orders);
 }
 
+export const getOrderByID = async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if(order){
+        res.send(order);
+    }
+    else{
+        res
+            .status(404)
+            .send({
+                message: 'Order Not Found'
+            });
+    }
+}
+
+
+
+/*---------------------------- Post Section ----------------------------*/
+
 export const createOrder = async (req, res) => {
     if(req.body.orderItems.length == 0){
         res
@@ -92,19 +112,9 @@ export const createOrder = async (req, res) => {
     }
 }
 
-export const getOrderByID = async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if(order){
-        res.send(order);
-    }
-    else{
-        res
-            .status(404)
-            .send({
-                message: 'Order Not Found'
-            });
-    }
-}
+
+
+/*---------------------------- Put Section ----------------------------*/
 
 export const payForOrder = async (req, res) => {
     const order = await Order.findById(req.params.id).populate('user', 'email name');
@@ -154,6 +164,12 @@ export const orderDelivered = async (req, res) => {
         res.status(404).send({ message: 'Order Not Found' });
     }
 }
+
+
+
+
+
+/*---------------------------- Delete Section ----------------------------*/
 
 export const deleteOrder = async (req, res) => {
     const order = await Order.findById(req.params.id);
