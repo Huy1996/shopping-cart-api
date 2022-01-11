@@ -2,6 +2,36 @@ import bcrypt from "bcryptjs";
 import User from '../models/user.js'
 import { generateToken } from "../middleware/middleware.js";
 
+/*---------------------------- Get Section ----------------------------*/
+
+export const getUserByID = async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if(user){
+        res.send(user);
+    }
+    else{
+        res
+            .status(404)
+            .send({
+                message: 'User Not Found'
+            });
+    }
+}
+
+export const getUserList = async (req, res) => {
+    const pageSize      = 10;
+    const page          = Number(req.query.pageNumber) || 1;
+    const count = await User.count({});
+    const users = await User
+        .find({})
+        .skip(pageSize * (page - 1))
+        .limit(pageSize);
+    res.send({users, page, pages: Math.ceil( count/ pageSize )});
+}
+
+
+/*---------------------------- Post Section ----------------------------*/
+
 export const userSignin = async (req, res) =>  {
     const user = await User.findOne({email: req.body.email});
     if(user){
@@ -39,19 +69,10 @@ export const userRegister = async (req, res) => {
     })
 }
 
-export const getUserByID = async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if(user){
-        res.send(user);
-    }
-    else{
-        res
-            .status(404)
-            .send({
-                message: 'User Not Found'
-            });
-    }
-}
+
+
+
+/*---------------------------- Put Section ----------------------------*/
 
 export const updateProfile = async(req, res) => {
     const user = await User.findById(req.user._id);
@@ -72,16 +93,31 @@ export const updateProfile = async(req, res) => {
     }
 }
 
-export const getUserList = async (req, res) => {
-    const pageSize      = 10;
-    const page          = Number(req.query.pageNumber) || 1;
-    const count = await User.count({});
-    const users = await User
-        .find({})
-        .skip(pageSize * (page - 1))
-        .limit(pageSize);
-    res.send({users, page, pages: Math.ceil( count/ pageSize )});
+export const updateUser = async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if(user){
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.isSeller = req.body.isSeller === user.isSeller ? user.isSeller : req.body.isSeller;
+        user.isAdmin = Boolean(req.body.isAdmin)
+        const updatedUser = await user.save();
+        res.send({
+            message:'User Updated',
+            user: updatedUser,
+        })
+    }
+    else{
+        res
+            .status(404)
+            .send({
+                message: 'User Not Found',
+            })
+    }
 }
+
+
+
+/*---------------------------- Delete Section ----------------------------*/
 
 export const deleteUser = async (req, res) => {
     const user = await User.findById(req.params.id);
@@ -107,24 +143,3 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-export const updateUser = async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if(user){
-        user.name = req.body.name || user.name;
-        user.email = req.body.email || user.email;
-        user.isSeller = req.body.isSeller === user.isSeller ? user.isSeller : req.body.isSeller;
-        user.isAdmin = Boolean(req.body.isAdmin)
-        const updatedUser = await user.save();
-        res.send({
-            message:'User Updated',
-            user: updatedUser,
-        })
-    }
-    else{
-        res
-            .status(404)
-            .send({
-                message: 'User Not Found',
-            })
-    }
-}

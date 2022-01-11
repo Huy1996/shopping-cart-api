@@ -15,7 +15,7 @@ import productRoute from './API/routes/productRoute.js'
 import orderRoute from './API/routes/orderRoute.js';
 import uploadRoute from "./API/routes/uploadRoute.js";
 import userRoute from "./API/routes/userRoute.js";
-
+import reviewRoute from "./API/routes/reviewRoute.js";
 
 // Allow CORS
 app.use((req, res, next) => {
@@ -33,6 +33,7 @@ app.use('/api/users',       userRoute);
 app.use('/api/products',    productRoute);
 app.use('/api/orders',      orderRoute);
 app.use('/api/uploads',     uploadRoute);
+app.use('/api/reviews',     reviewRoute);
 
 
 
