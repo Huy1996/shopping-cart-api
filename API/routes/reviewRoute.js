@@ -14,9 +14,9 @@ reviewRoute.get('/user/:id',       isAuth, isAdmin,         reviewController.get
 reviewRoute.post('/:id',           isAuth, isReviewValid,   reviewController.createReview,  calculateRating);
 
 // Put Request Section
-reviewRoute.put('/id',             isAuth,                   reviewController.updateReview)
+reviewRoute.put('/:id',            isAuth,                   reviewController.updateReview, calculateRating);
 
 // Delete Request Section
-reviewRoute.delete('/:id',         isAuth,                   reviewController.deleteReview);
+reviewRoute.delete('/:id',         isAuth,                   reviewController.deleteReview, calculateRating);
 
 export default reviewRoute;
