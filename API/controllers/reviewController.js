@@ -67,12 +67,20 @@ export const createReview = async (req, res, next) => {
 export const updateReview = async (req, res, next) => {
     try{
         const review = await Review.findById(req.params.id);
-        review.rate     = req.body.rating     || review.rating;
-        review.comment  = req.body.comment  || review.comment;
-        const updatedReview = await review.save();
-        res.status(200).send(updatedReview);
-        req.product = updatedReview.product;
-        next();
+        if(review && review.user.toString() === req.user._id) {
+            review.rating = req.body.rating || review.rating;
+            review.comment = req.body.comment || review.comment;
+            const updatedReview = await review.save();
+            res.status(200).send(updatedReview);
+            req.product = updatedReview.product;
+            next();
+        }
+        else{
+            res.status(400).send({
+                message: 'Unauthorized action'
+            })
+            return;
+        }
     }
     catch (error){
         res.status(404).send(error);
@@ -85,13 +93,15 @@ export const updateReview = async (req, res, next) => {
 
 /*---------------------------- Delete Section ----------------------------*/
 
-export const deleteReview = async (req, res) => {
-    const user      = req.user._id;
+export const deleteReview = async (req, res, next) => {
+    const userId      = req.user._id;
     try{
         const review = await Review.findById(req.params.id);
-        if(review.user.toString() === user){
+        req.product = review.product;
+        if(review.user.toString() === userId || req.user.isAdmin){
             const deletedReview = review.remove();
             res.status(200).send(deletedReview);
+            next();
         }
         else{
             res.status(403).json({
