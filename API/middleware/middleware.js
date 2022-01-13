@@ -42,6 +42,7 @@ export const isAuth = (req, res, next) => {
     }
 }
 
+
 export const isAdmin = (req, res, next) => {
     if(req.user && req.user.isAdmin){
         next();
@@ -54,6 +55,7 @@ export const isAdmin = (req, res, next) => {
             });
     };
 }
+
 
 export const mailgun = () => mg({
     apiKey: process.env.MAILGUN_API_KEY,
