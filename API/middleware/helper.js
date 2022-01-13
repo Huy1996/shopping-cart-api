@@ -35,16 +35,3 @@ export const calculateRating = async (req, res, next) => {
     product.numReviews = reviews.length;
     await product.save();
 }
-
-export const isReviewValid = async (req, res, next) => {
-    const review = await Review.find({user: req.user._id, product: req.params.id});
-    if(review){
-        res.status(400).send({
-            message: 'You already made a comment on this product. According to our policy, each your can only make one review per product. Please consider modifying your posted review! Thank you',
-        })
-        return;
-    }
-    else{
-        next();
-    }
-}
