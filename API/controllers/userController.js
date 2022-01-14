@@ -5,16 +5,20 @@ import { generateToken } from "../middleware/middleware.js";
 /*---------------------------- Get Section ----------------------------*/
 
 export const getUserByID = async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if(user){
-        res.send(user);
+    if(req.user._id === req.params.id || req.user.isAdmin) {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            res.send(user);
+        } else {
+            res
+                .status(404)
+                .send({
+                    message: 'User Not Found'
+                });
+        }
     }
     else{
-        res
-            .status(404)
-            .send({
-                message: 'User Not Found'
-            });
+        res.status(400).send({message: 'Unauthorized request'});
     }
 }
 

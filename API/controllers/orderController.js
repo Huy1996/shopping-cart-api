@@ -61,8 +61,24 @@ export const getSummary = async (req, res) => {
 }
 
 export const getPersonalOrder = async (req, res) => {
-    const orders = await Order.find({ user: req.user._id });
-    res.send(orders);
+    try{
+        const orders = await Order.find({ user: req.user._id });
+        res.send(orders);
+    }
+    catch (error){
+        res.status(404).send(error);
+    }
+}
+
+export const getUserOrder = async (req, res) => {
+    try{
+        const orders = await Order.find({ user: req.params.id });
+        const count = await Order.count({ user: req.params.id });
+        res.send({count, orders});
+    }
+    catch (error){
+        res.status(404).send(error);
+    }
 }
 
 export const getOrderByID = async (req, res) => {

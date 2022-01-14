@@ -28,8 +28,9 @@ export const getReviewFromProduct = async (req, res) => {
 // Admin
 export const getUserReview = async (req, res) => {
     try{
-        const reviews = await Review.find({user: req.params.id}).populate('user').populate('product');
-        res.status(200).send(reviews);
+        const count = await Review.count({user: req.params.id})
+        const reviews = await Review.find({user: req.params.id});
+        res.status(200).send({count, reviews});
     }
     catch (error){
         res.status(404).send(error);
@@ -99,7 +100,7 @@ export const deleteReview = async (req, res, next) => {
         const review = await Review.findById(req.params.id);
         req.product = review.product;
         if(review.user.toString() === userId || req.user.isAdmin){
-            const deletedReview = review.remove();
+            const deletedReview = await review.remove();
             res.status(200).send(deletedReview);
             next();
         }

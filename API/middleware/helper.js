@@ -31,8 +31,14 @@ export const calculateRating = async (req, res, next) => {
     const productId = req.product;
     const reviews = await Review.find({product: productId});
     const product = await Product.findById(productId);
-    product.rating = reviews.reduce((a, c) => c.rating + a, 0) / reviews.length;
-    product.numReviews = reviews.length;
+    if(reviews.length === 0){
+        product.rating = 0;
+        product.numReviews = 0;
+    }
+    else {
+        product.rating = reviews.reduce((a, c) => c.rating + a, 0) / reviews.length;
+        product.numReviews = reviews.length;
+    }
     await product.save();
 }
 
