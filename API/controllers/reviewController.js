@@ -29,7 +29,7 @@ export const getReviewFromProduct = async (req, res) => {
 export const getUserReview = async (req, res) => {
     try{
         const count = await Review.count({user: req.params.id})
-        const reviews = await Review.find({user: req.params.id});
+        const reviews = await Review.find({user: req.params.id}).populate('product').populate('user');
         res.status(200).send({count, reviews});
     }
     catch (error){
