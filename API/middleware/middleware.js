@@ -57,7 +57,7 @@ export const isAdmin = (req, res, next) => {
 }
 
 export const isValid = (req, res, next) => {
-    if(req.user && (req.user.toString() === req.params.id || req.user.isAdmin)){
+    if(req.user && (req.user._id.toString() === req.params.id || req.user.isAdmin)){
         next();
     }
     else{
