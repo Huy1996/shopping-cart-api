@@ -1,7 +1,8 @@
 import express              from 'express';
-import { isAdmin, isAuth }  from '../middleware/middleware.js';
+import { isAdmin, isAuth, isValid }  from '../middleware/middleware.js';
 import * as orderController from '../controllers/orderController.js'
 import { updateProduct }    from "../middleware/helper.js";
+import {getUserOrder} from "../controllers/orderController.js";
 
 const orderRoute = express.Router();
 
@@ -10,6 +11,7 @@ orderRoute.get('/',             isAuth,     isAdmin,        orderController.getA
 orderRoute.get('/summary',      isAuth,     isAdmin,        orderController.getSummary);
 orderRoute.get('/mine',         isAuth,                     orderController.getPersonalOrder);
 orderRoute.get('/:id',          isAuth,                     orderController.getOrderByID);
+orderRoute.get('/user/:id',     isAuth,     isValid,        orderController.getUserOrder);
 
 
 // Post Request Section

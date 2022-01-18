@@ -56,6 +56,19 @@ export const isAdmin = (req, res, next) => {
     };
 }
 
+export const isValid = (req, res, next) => {
+    if(req.user && (req.user.toString() === req.params.id || req.user.isAdmin)){
+        next();
+    }
+    else{
+        res
+            .status(401)
+            .send({
+                message: 'Unauthorized action'
+            })
+    }
+}
+
 
 export const mailgun = () => mg({
     apiKey: process.env.MAILGUN_API_KEY,
