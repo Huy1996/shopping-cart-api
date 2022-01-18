@@ -121,18 +121,18 @@ export const userReview = async(req, res) => {
 
 /*---------------------------- Post Section ----------------------------*/
 
-export const createInitialProduct = async(req, res) => {
+export const createProduct = async(req, res) => {
     // Initialize product
     const product = new Product({
-        name: 'sample name' + Date.now(),
-        image: '/image/p1.jpg',
-        price: 0,
-        category: 'sample category',
-        brand: 'sample brand',
-        countInStock: 0,
+        name: req.body.name,
+        image: req.body.image,
+        price: req.body.price,
+        category: req.body.category,
+        brand: req.body.brand,
+        countInStock: req.body.countInStock,
         rating: 0,
         numReviews: 0,
-        description: 'sample descriptiop',
+        description: req.body.description,
     });
     const createdProduct = await product.save();
     res.send({

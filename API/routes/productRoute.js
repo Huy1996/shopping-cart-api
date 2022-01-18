@@ -12,7 +12,7 @@ productRoute.get('/:id',                                productController.getPro
 
 
 // Post Request Section
-productRoute.post('/',              isAuth, isAdmin,    productController.createInitialProduct);
+productRoute.post('/',              isAuth, isAdmin,    productController.createProduct);
 productRoute.post('/:id/reviews',   isAuth,             productController.userReview)
 
 // Put Request Section
