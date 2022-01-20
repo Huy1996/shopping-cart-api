@@ -2,7 +2,6 @@ import express              from 'express';
 import { isAdmin, isAuth, isValid }  from '../middleware/middleware.js';
 import * as orderController from '../controllers/orderController.js'
 import { updateProduct }    from "../middleware/helper.js";
-import {getUserOrder} from "../controllers/orderController.js";
 
 const orderRoute = express.Router();
 
