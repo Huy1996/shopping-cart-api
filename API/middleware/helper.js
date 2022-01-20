@@ -54,3 +54,14 @@ export const isReviewValid = async (req, res, next) => {
         next();
     }
 }
+
+export const clearReview = async (req, res, next) => {
+    const count = Review.count({product: req.params.id});
+    if(count === 0){
+        next();
+    }
+    else{
+        await Review.deleteMany({product: req.params.id});
+        next();
+    }
+}
