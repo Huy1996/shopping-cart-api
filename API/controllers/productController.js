@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import Product from '../models/product.js';
+import {PAGE_SIZE} from "../middleware/constant.js";
 
 /*---------------------------- Get Section ----------------------------*/
 
 export const getAllProduct = async (req, res) => {
-    // Default number of product per page
-    const pageSize          = 10;
+
     // Get query data from route
     const page              = Number(req.query.pageNumber)          || 1;
     const name              = req.query.name                        || '';
@@ -45,14 +45,14 @@ export const getAllProduct = async (req, res) => {
                                             ...ratingFilter,
                                     })
                                     .sort(sortOrder)
-                                    .skip(pageSize * (page - 1))
-                                    .limit(pageSize);
+                                    .skip(PAGE_SIZE * (page - 1))
+                                    .limit(PAGE_SIZE);
 
     // Response
     res.send({
         products,
         page,
-        pages: Math.ceil(count/ pageSize)
+        pages: Math.ceil(count/ PAGE_SIZE)
     });
 }
 

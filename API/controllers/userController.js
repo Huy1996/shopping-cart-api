@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from '../models/user.js'
 import { generateToken } from "../middleware/middleware.js";
+import {PAGE_SIZE} from "../middleware/constant.js";
 
 /*---------------------------- Get Section ----------------------------*/
 
@@ -23,14 +24,13 @@ export const getUserByID = async (req, res) => {
 }
 
 export const getUserList = async (req, res) => {
-    const pageSize      = 10;
     const page          = Number(req.query.pageNumber) || 1;
     const count = await User.count({});
     const users = await User
         .find({})
-        .skip(pageSize * (page - 1))
-        .limit(pageSize);
-    res.send({users, page, pages: Math.ceil( count/ pageSize )});
+        .skip(PAGE_SIZE * (page - 1))
+        .limit(PAGE_SIZE);
+    res.send({users, page, pages: Math.ceil( count/ PAGE_SIZE )});
 }
 
 

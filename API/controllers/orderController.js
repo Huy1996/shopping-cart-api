@@ -2,22 +2,22 @@ import Order from '../models/order.js'
 import User from '../models/user.js'
 import Product from "../models/product.js";
 import { mailgun, payOrderEmailTemplate } from '../middleware/middleware.js';
+import {PAGE_SIZE} from "../middleware/constant.js";
 
 /*---------------------------- Get Section ----------------------------*/
 
 export const getAllOrders = async (req, res) => {
-    const pageSize      = 10;
     const page          = Number(req.query.pageNumber) || 1;
     const count         = await Order.count({})
     const orders = await Order
                             .find({})
                             .populate('user', 'name')
-                            .skip(pageSize * (page - 1))
-                            .limit(pageSize);
+                            .skip(PAGE_SIZE * (page - 1))
+                            .limit(PAGE_SIZE);
     res.send({
         orders,
         page,
-        pages: Math.ceil( count/ pageSize )
+        pages: Math.ceil( count/ PAGE_SIZE )
     });
 }
 
