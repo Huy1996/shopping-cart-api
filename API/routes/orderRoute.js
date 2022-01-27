@@ -23,6 +23,6 @@ orderRoute.put('/:id/deliver',  isAuth,                     orderController.orde
 
 
 // Delete Request Section
-orderRoute.delete('/:id',       isAuth,                     orderController.deleteOrder)
+orderRoute.delete('/:id',       isAuth,                     orderController.deleteOrder);
 
 export default orderRoute;

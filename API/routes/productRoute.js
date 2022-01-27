@@ -14,7 +14,7 @@ productRoute.get('/:id',                                          productControl
 
 // Post Request Section
 productRoute.post('/',              isAuth, isAdmin,              productController.createProduct);
-productRoute.post('/:id/reviews',   isAuth,                       productController.userReview)
+productRoute.post('/:id/reviews',   isAuth,                       productController.userReview);
 
 // Put Request Section
 productRoute.put('/:id',            isAuth, isAdmin,              productController.updateProduct);

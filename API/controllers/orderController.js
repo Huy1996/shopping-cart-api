@@ -62,8 +62,18 @@ export const getSummary = async (req, res) => {
 
 export const getPersonalOrder = async (req, res) => {
     try{
-        const orders = await Order.find({ user: req.user._id });
-        res.send(orders);
+
+        const page   = Number(req.query.pageNumber) || 1;
+        const count  = await Order.count({ user: req.user._id  });
+        const orders = await Order
+                                .find({ user: req.user._id })
+                                .skip(PAGE_SIZE * (page - 1))
+                                .limit(PAGE_SIZE)
+        res.send({
+            orders,
+            page,
+            pages: Math.ceil( count/ PAGE_SIZE )
+        });
     }
     catch (error){
         res.status(404).send(error);
@@ -72,9 +82,13 @@ export const getPersonalOrder = async (req, res) => {
 
 export const getUserOrder = async (req, res) => {
     try{
+        const page   = Number(req.query.pageNumber) || 1;
         const orders = await Order.find({ user: req.params.id });
-        const count = await Order.count({ user: req.params.id });
-        res.send({count, orders});
+        const count  = await Order.count({ user: req.params.id });
+        res.send({
+            count,
+            orders
+        });
     }
     catch (error){
         res.status(404).send(error);
