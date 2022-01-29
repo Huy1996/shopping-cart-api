@@ -3,6 +3,7 @@ import User from '../models/user.js'
 import Product from "../models/product.js";
 import { mailgun, payOrderEmailTemplate } from '../middleware/middleware.js';
 import {PAGE_SIZE} from "../middleware/constant.js";
+import { dateDifference } from "../middleware/helper.js"
 
 /*---------------------------- Get Section ----------------------------*/
 
@@ -12,6 +13,7 @@ export const getAllOrders = async (req, res) => {
     const orders = await Order
                             .find({})
                             .populate('user', 'name')
+                            .sort({createdAt: -1})
                             .skip(PAGE_SIZE * (page - 1))
                             .limit(PAGE_SIZE);
     res.send({
@@ -67,6 +69,7 @@ export const getPersonalOrder = async (req, res) => {
         const count  = await Order.count({ user: req.user._id  });
         const orders = await Order
                                 .find({ user: req.user._id })
+                                .sort({createdAt: -1})
                                 .skip(PAGE_SIZE * (page - 1))
                                 .limit(PAGE_SIZE)
         res.send({
@@ -124,8 +127,28 @@ export const createOrder = async (req, res) => {
             taxPrice:           req.body.taxPrice,
             totalPrice:         req.body.totalPrice,
             user:               req.user._id,
+            paymentResult:      req.body.paymentResult
         });
         const createdOrder = await order.save();
+        const user = await User.findById(req.user._id);
+        try{
+            mailgun().messages().send({
+                from:'Shopping_Cart <seniorproject195@gmail.com>',
+                to:`${user.name} <${user.email}>`,
+                subject:`New order ${order._id}`,
+                html: payOrderEmailTemplate(order),
+            }, (error, body) => {
+                if(error){
+                    console.log(error);
+                }
+                else{
+                    console.log(body);
+                }
+            });
+        }
+        catch(error){
+            console.log(error)
+        }
         res
             .status(201)
             .send({
@@ -186,13 +209,65 @@ export const orderDelivered = async (req, res) => {
         order.isDelivered = true;
         order.deliveredAt = Date.now();
         const updatedOrder = await order.save();
-        res.send({ message: 'Order Deliverd', order: updatedOrder });
+        res.send({
+            message: 'Order Deliverd',
+            order: updatedOrder
+        });
     } else {
         res.status(404).send({ message: 'Order Not Found' });
     }
 }
 
+export const cancelRequest = async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if(order){
+        if(order.isDelivered && dateDifference(new Date(Date.now()), order.deliveredAt) > 7){
+            res
+                .status(400)
+                .send({
+                    message: 'You have passed the day for cancel.'
+                });
+            return;
+        }
+        order.requestCancel = true;
+        order.requestedAt = Date.now();
+        order.reasonCancel = req.body.reason;
+        const updatedOrder = await order.save();
+        res.send({order:updatedOrder})
+    }
+    else{
+        res.status(404).send({ message: 'Order Not Found' });
+    }
+}
 
+export const cancelOrder = async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if(order){
+        if(!order.requestCancel){
+            res
+                .status(400)
+                .send({
+                    message: "This order didn't request to cancel."
+                });
+            return;
+        }
+        if(order.isCanceled){
+            res
+                .status(400)
+                .send({
+                    message: "This order already cancelled."
+                });
+            return;
+        }
+        order.isCanceled = true;
+        order.cancaledAt = Date.now();
+        const updatedOrder = await order.save();
+        res.send({order:updatedOrder}) 
+    }
+    else{
+        res.status(404).send({ message: 'Order Not Found' });
+    }
+}
 
 
 

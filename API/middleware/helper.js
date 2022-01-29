@@ -65,3 +65,9 @@ export const clearReview = async (req, res, next) => {
         next();
     }
 }
+
+export const dateDifference = (day1, day2) => {
+    const t2 = day2.getTime();
+    const t1 = day1.getTime();
+    return Math.floor((t2-t1)/(24*3600*1000));
+}

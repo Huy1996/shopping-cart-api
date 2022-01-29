@@ -76,13 +76,6 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    isPaid: {
-        type: Boolean,
-        default: false,
-    },
-    paidAt: {
-        type: Date
-    },
     isDelivered: {
         type: Boolean,
         default: false,
@@ -90,22 +83,23 @@ const orderSchema = new mongoose.Schema({
     deliveredAt: {
         type: Date
     },
-    cancellation: {
-        request: {
-            type: Boolean,
-            default: false,
-        },
-        requestedAt:{
-            type: Date,
-        },
-        isCanceled: {
-            type: Boolean,
-            default: false,
-        },
-        canceledAt: {
-            type: Date,
-        }
-    }
+    requestCancel: {
+        type: Boolean,
+        default: false,
+    },
+    requestedAt: {
+        type: Date,
+    },
+    reasonCancel: {
+        type: String,
+    },
+    isCanceled: {
+        type: Boolean,
+        default: false,
+    },
+    canceledAt: {
+        type: Date,
+    },
 },
 {
     timestamps: true,

@@ -6,23 +6,25 @@ import { updateProduct }    from "../middleware/helper.js";
 const orderRoute = express.Router();
 
 // Get Request Section
-orderRoute.get('/',             isAuth,     isAdmin,        orderController.getAllOrders);
-orderRoute.get('/summary',      isAuth,     isAdmin,        orderController.getSummary);
-orderRoute.get('/mine',         isAuth,                     orderController.getPersonalOrder);
-orderRoute.get('/:id',          isAuth,                     orderController.getOrderByID);
-orderRoute.get('/user/:id',     isAuth,     isValid,        orderController.getUserOrder);
+orderRoute.get('/',                     isAuth,     isAdmin,        orderController.getAllOrders);
+orderRoute.get('/summary',              isAuth,     isAdmin,        orderController.getSummary);
+orderRoute.get('/mine',                 isAuth,                     orderController.getPersonalOrder);
+orderRoute.get('/:id',                  isAuth,                     orderController.getOrderByID);
+orderRoute.get('/user/:id',             isAuth,     isValid,        orderController.getUserOrder);
 
 
 // Post Request Section
-orderRoute.post('/',            isAuth,     updateProduct,  orderController.createOrder);
+orderRoute.post('/',                    isAuth,     updateProduct,  orderController.createOrder);
 
 
 // Put Request Section
-orderRoute.put('/:id/pay',      isAuth,                     orderController.payForOrder);
-orderRoute.put('/:id/deliver',  isAuth,                     orderController.orderDelivered);
+orderRoute.put('/:id/pay',              isAuth,                     orderController.payForOrder);
+orderRoute.put('/:id/deliver',          isAuth,                     orderController.orderDelivered);
+orderRoute.put('/:id/cancelrequest',    isAuth,                     orderController.cancelRequest);
+orderRoute.put('/:id/canceled',         isAuth,     isAdmin,        orderController.cancelOrder)
 
 
 // Delete Request Section
-orderRoute.delete('/:id',       isAuth,                     orderController.deleteOrder);
+orderRoute.delete('/:id',               isAuth,                     orderController.deleteOrder);
 
 export default orderRoute;
