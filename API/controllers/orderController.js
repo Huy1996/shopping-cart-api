@@ -260,7 +260,7 @@ export const cancelOrder = async (req, res) => {
             return;
         }
         order.isCanceled = true;
-        order.cancaledAt = Date.now();
+        order.canceledAt = Date.now();
         const updatedOrder = await order.save();
         res.send({order:updatedOrder}) 
     }
