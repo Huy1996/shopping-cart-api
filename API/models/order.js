@@ -22,6 +22,9 @@ const orderSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
+        options:{
+            type: Object,
+        }
     }],
     shippingAddress: {
         fullName: {

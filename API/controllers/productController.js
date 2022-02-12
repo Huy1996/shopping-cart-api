@@ -27,7 +27,6 @@ export const getAllProduct = async (req, res) => {
             order === 'toprated' ? {rating: -1}:
                 {_id: -1};
 
-    console.log(category)
     // Count matching data
     const count = await Product.count({
         ...nameFilter,
@@ -36,6 +35,7 @@ export const getAllProduct = async (req, res) => {
         ...priceFilter,
         ...ratingFilter,
     });
+
     // Get data
     const products = await Product.find({
                                             ...nameFilter,
@@ -129,10 +129,12 @@ export const createProduct = async(req, res) => {
         category: req.body.category,
         brand: req.body.brand,
         countInStock: req.body.countInStock,
+        attribute: req.body.attribute,
         rating: 0,
         numReviews: 0,
         description: req.body.description,
     });
+    console.log(req.body);
     const createdProduct = await product.save();
     res.send({
         message: 'Product Created',
@@ -154,6 +156,7 @@ export const updateProduct = async(req, res) => {
         product.category = req.body.category;
         product.brand = req.body.brand;
         product.countInStock = req.body.countInStock;
+        product.attribute = req.body.attribute;
         product.description = req.body.description;
         const updatedProduct = await product.save();
         res.send({
