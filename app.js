@@ -65,7 +65,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 
 // Assign route
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, swaggerConfigure));
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, swaggerConfigure));
 app.use('/api/users',       userRoute);
 app.use('/api/products',    productRoute);
 app.use('/api/orders',      orderRoute);
