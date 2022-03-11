@@ -49,7 +49,9 @@ export const getAllProduct = async (req, res) => {
                                     .limit(PAGE_SIZE);
 
     // Response
-    res.send({
+    res
+        .status(200)
+        .send({
         products,
         page,
         pages: Math.ceil(count/ PAGE_SIZE)
@@ -59,19 +61,25 @@ export const getAllProduct = async (req, res) => {
 export const getAllCategories = async (req, res) => {
     //Find all distinct category
     const categories = await Product.find().distinct('category');
-    res.send(categories);
+    res
+        .status(200)
+        .send(categories);
 }
 
 export const getAllBrands = async (req, res) => {
     //Find all distinct brand
     const brands = await Product.find().distinct('brand');
-    res.send(brands);
+    res
+        .status(200)
+        .send(brands);
 }
 
 export const getProductByID = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if(product){
-        res.send(product);
+        res
+            .status(200)
+            .send(product);
     }
     else{
         res
@@ -136,7 +144,9 @@ export const createProduct = async(req, res) => {
     });
     console.log(req.body);
     const createdProduct = await product.save();
-    res.send({
+    res
+        .status(200)
+        .send({
         message: 'Product Created',
         product: createdProduct
     });
@@ -159,7 +169,9 @@ export const updateProduct = async(req, res) => {
         product.attribute = req.body.attribute;
         product.description = req.body.description;
         const updatedProduct = await product.save();
-        res.send({
+        res
+            .status(200)
+            .send({
             message:'Product Updated',
             product:updatedProduct,
         });
@@ -183,7 +195,9 @@ export const deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if(product){
         const deleteProduct = await product.remove();
-        res.send({
+        res
+            .status(200)
+            .send({
             message: 'Product Deleted',
             product: deleteProduct,
         })

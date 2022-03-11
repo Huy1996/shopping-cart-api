@@ -7,9 +7,11 @@ import {PAGE_SIZE} from "../middleware/constant.js";
 
 export const getUserByID = async (req, res) => {
     if(req.user._id === req.params.id || req.user.isAdmin) {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).select('-password');
         if (user) {
-            res.send(user);
+            res
+                .status(200)
+                .send(user);
         } else {
             res
                 .status(404)
@@ -28,6 +30,7 @@ export const getUserList = async (req, res) => {
     const count = await User.count({});
     const users = await User
         .find({})
+        .select('-password')
         .skip(PAGE_SIZE * (page - 1))
         .limit(PAGE_SIZE);
     res.send({users, page, pages: Math.ceil( count/ PAGE_SIZE )});
@@ -98,11 +101,10 @@ export const updateProfile = async(req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select('-password');
     if(user){
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
-        user.isSeller = req.body.isSeller === user.isSeller ? user.isSeller : req.body.isSeller;
         user.isAdmin = Boolean(req.body.isAdmin)
         const updatedUser = await user.save();
         res.send({
