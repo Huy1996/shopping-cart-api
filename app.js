@@ -1,6 +1,8 @@
 // Import package
 import express from 'express';
 import mongoose from 'mongoose';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
 
 const app = express();
 app.use(express.json());
@@ -28,7 +30,42 @@ app.use((req, res, next) => {
     next();
 });
 
+// Swagger documentation
+
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info:{
+            title: "Shopping Cart API",
+            version: "1.0.0"
+        }
+    },
+    host: 'https://shopping-cart-api-195.herokuapp.com',
+    basePath: '/',
+    apis:[
+        './API/docs/config.yaml',
+        './API/docs/user.yaml',
+        './API/docs/product.yaml',
+        './API/docs/order.yaml',
+        './API/docs/review.yaml',
+        './API/docs/upload.yaml'
+    ],
+};
+
+const swaggerConfigure = {
+    swaggerOptions: {
+        tryItOutEnabled: false,
+        supportedSubmitMethods: [''],
+        defaultModelsExpandDepth: -1
+    },
+};
+
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+
 // Assign route
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, swaggerConfigure));
 app.use('/api/users',       userRoute);
 app.use('/api/products',    productRoute);
 app.use('/api/orders',      orderRoute);
@@ -38,10 +75,14 @@ app.use('/api/reviews',     reviewRoute);
 
 
 app.get('/api/config/paypal', (req, res) => {
-    res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+    res
+        .status(200)
+        .send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
 app.get('/api/config/google', (req, res) => {
-    res.send(process.env.GOOGLE_API_KEY || '');
+    res
+        .status(200)
+        .send(process.env.GOOGLE_API_KEY || '');
 });
 
 
@@ -65,6 +106,5 @@ app.use((error, req, res, next) => {
         }
     });
 });
-
 
 export default app;

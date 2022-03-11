@@ -6,18 +6,22 @@ import mongoose from "mongoose";
 
 export const getReviewFromUser = async (req, res) => {
     try{
-        const reviews = await Review.find({user: req.user._id}).populate('product');
-        res.send(reviews);
+        const reviews = await Review.find({user: req.user._id}).populate('product')
+        res
+            .status(200)
+            .send(reviews);
     }
     catch (error){
-        res.send(error);
+        res
+            .status(404)
+            .send(error);
     }
 }
 
 
 export const getReviewFromProduct = async (req, res) => {
     try{
-        const reviews = await Review.find({product: req.params.id}).populate('user', 'name');
+        const reviews = await Review.find({product: req.params.id}).populate('user', 'name -password');
         res.status(200).send(reviews);
     }
     catch (error){
@@ -48,7 +52,7 @@ export const createReview = async (req, res, next) => {
             _id:        new mongoose.Types.ObjectId(),
             user:       user,
             product:    product,
-            rating:       req.body.rating,
+            rating:     req.body.rating,
             comment:    req.body.comment
         });
         const createdReview = await review.save();

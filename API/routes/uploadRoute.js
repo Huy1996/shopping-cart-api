@@ -18,7 +18,9 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 uploadRoute.post('/', isAuth, isAdmin, upload.single('image'), (req, res) => {
-    res.send(`/${req.file.path}`);
+    res
+        .status(200)
+        .send(`/${req.file.path}`);
 })
 
 aws.config.update({
@@ -39,8 +41,12 @@ const storageS3 = multerS3({
 });
 
 const uploadS3 = multer({storage: storageS3});
+
+
 uploadRoute.post('/s3', uploadS3.single('image'), (req, res) => {
-    res.send(req.file.location);
+    res
+        .status(200)
+        .send(req.file.location);
 });
 
 export default uploadRoute;

@@ -16,7 +16,9 @@ export const getAllOrders = async (req, res) => {
                             .sort({createdAt: -1})
                             .skip(PAGE_SIZE * (page - 1))
                             .limit(PAGE_SIZE);
-    res.send({
+    res
+        .status(200)
+        .send({
         orders,
         page,
         pages: Math.ceil( count/ PAGE_SIZE )
@@ -59,7 +61,9 @@ export const getSummary = async (req, res) => {
             },
         },
     ]);
-    res.send({users, orders, dailyOrders, productCategories});
+    res
+        .status(200)
+        .send({users, orders, dailyOrders, productCategories});
 }
 
 export const getPersonalOrder = async (req, res) => {
@@ -88,7 +92,9 @@ export const getUserOrder = async (req, res) => {
         const page   = Number(req.query.pageNumber) || 1;
         const orders = await Order.find({ user: req.params.id });
         const count  = await Order.count({ user: req.params.id });
-        res.send({
+        res
+            .status(200)
+            .send({
             count,
             orders
         });
@@ -101,7 +107,9 @@ export const getUserOrder = async (req, res) => {
 export const getOrderByID = async (req, res) => {
     const order = await Order.findById(req.params.id);
     if(order){
-        res.send(order);
+        res
+            .status(200)
+            .send(order);
     }
     else{
         res
@@ -209,7 +217,9 @@ export const orderDelivered = async (req, res) => {
         order.isDelivered = true;
         order.deliveredAt = Date.now();
         const updatedOrder = await order.save();
-        res.send({
+        res
+            .status(200)
+            .send({
             message: 'Order Deliverd',
             order: updatedOrder
         });
@@ -277,7 +287,9 @@ export const deleteOrder = async (req, res) => {
     const order = await Order.findById(req.params.id);
     if(order){
         const deleteOrder = await order.remove();
-        res.send({
+        res
+            .status(200)
+            .send({
             message: 'Order Deleted',
             order: deleteOrder
         });
