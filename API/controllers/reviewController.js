@@ -21,7 +21,7 @@ export const getReviewFromUser = async (req, res) => {
 
 export const getReviewFromProduct = async (req, res) => {
     try{
-        const reviews = await Review.find({product: req.params.id}).populate('user', 'name -password');
+        const reviews = await Review.find({product: req.params.id}).populate('user', 'name _id email');
         res.status(200).send(reviews);
     }
     catch (error){
@@ -33,7 +33,7 @@ export const getReviewFromProduct = async (req, res) => {
 export const getUserReview = async (req, res) => {
     try{
         const count = await Review.count({user: req.params.id})
-        const reviews = await Review.find({user: req.params.id}).populate('product').populate('user');
+        const reviews = await Review.find({user: req.params.id}).populate('product').populate('user', 'name _id email');
         res.status(200).send({count, reviews});
     }
     catch (error){
