@@ -1,4 +1,4 @@
-FROM node:12exie-alpine
+FROM node:12-alpine
 WORKDIR /app/backend
 
 COPY package.json ./
